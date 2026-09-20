@@ -3482,15 +3482,20 @@
       });
     }
 
-    // Authentication & Persistent Session Management
+    // Maximum session lifetime: 2 hours (in milliseconds)
+    const AUTH_SESSION_TTL_MS = 2 * 60 * 60 * 1000;
+
+    // Authentication & Tab-Scoped Session Management (Zero LocalStorage Leakage)
     function saveAuthSession(token, user) {
       try {
         if (token && user) {
           AppState.authToken = token;
           AppState.currentUser = user;
           const sessionData = JSON.stringify({ token, user, timestamp: Date.now() });
+          // Strictly use sessionStorage (destroyed when tab/browser is closed, preserved on F5 refresh)
           sessionStorage.setItem('app_auth_session', sessionData);
-          localStorage.setItem('app_auth_session', sessionData);
+          // Purge any lingering legacy persistent tokens
+          localStorage.removeItem('app_auth_session');
         }
       } catch (e) { }
     }
@@ -3500,16 +3505,30 @@
       AppState.currentUser = null;
       try {
         sessionStorage.removeItem('app_auth_session');
+        sessionStorage.removeItem('app_cached_data');
         localStorage.removeItem('app_auth_session');
+        localStorage.removeItem('app_cached_data');
       } catch (e) { }
     }
 
     function checkAuthSession() {
+      // Purge any legacy persistent tokens from localStorage
+      try { localStorage.removeItem('app_auth_session'); } catch (e) {}
+
       try {
-        const raw = sessionStorage.getItem('app_auth_session') || localStorage.getItem('app_auth_session');
+        const raw = sessionStorage.getItem('app_auth_session');
         if (raw) {
           const session = JSON.parse(raw);
           if (session && session.token && session.user) {
+            // Check session expiration / TTL (2 hours)
+            const isExpired = session.timestamp && (Date.now() - session.timestamp > AUTH_SESSION_TTL_MS);
+            if (isExpired) {
+              clearAuthSession();
+              showLogin();
+              showToast('Sesi Anda telah berakhir. Silakan masuk kembali.', 'info');
+              return;
+            }
+
             AppState.authToken = session.token;
             AppState.currentUser = session.user;
             showApp();
@@ -3522,7 +3541,7 @@
         }
       } catch (e) { }
 
-      // Default: show login screen if no session
+      // Default: show login screen if no active session in current tab
       AppState.authToken = null;
       AppState.currentUser = null;
       showLogin();
@@ -3583,7 +3602,8 @@
 
     function loadCachedData() {
       try {
-        const cached = localStorage.getItem('app_cached_data');
+        // Tab-scoped cache for current active session
+        const cached = sessionStorage.getItem('app_cached_data');
         if (cached) {
           const parsed = JSON.parse(cached);
           if (parsed && typeof parsed === 'object') {
@@ -3603,7 +3623,8 @@
           transactions: AppState.transactions,
           timestamp: Date.now()
         };
-        localStorage.setItem('app_cached_data', JSON.stringify(payload));
+        // Use sessionStorage so sensitive transaction data is wiped when tab is closed
+        sessionStorage.setItem('app_cached_data', JSON.stringify(payload));
       } catch (e) { }
     }
 
