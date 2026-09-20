@@ -1,0 +1,12 @@
+{
+  "name": "financial-journey-vercel",
+  "version": "2.0.0",
+  "description": "Financial Journey with You - Production Web App for Vercel",
+  "private": true,
+  "scripts": {
+    "start": "npx -y serve ."
+  },
+  "keywords": ["finance", "savings", "vercel"],
+  "author": "Antigravity",
+  "license": "MIT"
+}
