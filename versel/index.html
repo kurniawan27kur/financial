@@ -728,7 +728,7 @@
 
     <!-- BEGIN: Sidebar -->
     <aside
-      class="fixed inset-y-0 left-0 z-50 hidden w-72 flex-col justify-between border-r border-teal-100/70 dark:border-teal-950/90 bg-white dark:bg-[#0B1C1A] p-4 sm:p-5 transition-all duration-300 lg:static lg:flex lg:w-72 lg:shrink-0 h-[100dvh] max-h-[100dvh] overflow-y-auto overscroll-contain pb-28 lg:pb-5"
+      class="fixed inset-y-0 left-0 z-50 hidden w-72 flex-col justify-between border-r border-teal-100/70 dark:border-teal-950/90 bg-white dark:bg-[#0B1C1A] p-4 sm:p-5 transition-all duration-300 lg:static lg:flex lg:w-72 lg:shrink-0 h-[100dvh] max-h-[100dvh] overflow-y-auto overscroll-contain pb-5"
       id="sidebarContainer">
       <div class="flex flex-col gap-3.5">
         <!-- Brand Identification -->
@@ -1052,7 +1052,7 @@
 
         <!-- Current Active User Profile & Logout Card (Bawah Kiri Sidebar) -->
         <div
-          class="rounded-2xl bg-gradient-to-r from-teal-50/90 to-slate-50 dark:from-[#0D2623] dark:to-[#081B19] border border-teal-100/90 dark:border-teal-900/60 p-3 space-y-2.5 shadow-2xs mb-8 lg:mb-0">
+          class="rounded-2xl bg-gradient-to-r from-teal-50/90 to-slate-50 dark:from-[#0D2623] dark:to-[#081B19] border border-teal-100/90 dark:border-teal-900/60 p-3 space-y-2.5 shadow-2xs">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5 min-w-0">
               <div id="sidebarUserAvatar"
@@ -1093,7 +1093,7 @@
 
     <!-- BEGIN: MainContent -->
     <main
-      class="flex-1 p-3 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full h-full min-h-0 overflow-y-auto overscroll-contain space-y-3.5 sm:space-y-4 pb-24 lg:pb-6">
+      class="flex-1 p-3 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full h-full min-h-0 overflow-y-auto overscroll-contain space-y-3.5 sm:space-y-4 pb-4 sm:pb-5 lg:pb-6">
 
       <!-- Global Demo Mode Notice Alert Banner (Shown when role === 'demo') -->
       <div id="demoGlobalBanner"
@@ -1480,12 +1480,12 @@
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-3.5">
           <!-- Transaksi Terbaru Table (Col 8) -->
           <div
-            class="lg:col-span-8 bg-white rounded-2xl p-4 sm:p-5 shadow-card border border-teal-50 flex flex-col justify-between">
+            class="lg:col-span-8 bg-white dark:bg-[#0D2220] rounded-2xl p-4 sm:p-5 shadow-card border border-teal-50 dark:border-teal-950/80 flex flex-col justify-between">
             <div>
               <!-- Header bar -->
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2.5">
-                  <svg class="h-5 w-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2"
+                  <svg class="h-5 w-5 text-brand-600 dark:text-teal-400" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
@@ -1493,9 +1493,9 @@
                   <h3 class="text-base font-bold text-slate-900 dark:text-white">Transaksi Terbaru</h3>
                 </div>
                 <button onclick="switchTab('transaksi')"
-                  class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                  class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-teal-900/80 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 hover:dark:bg-teal-950/50 transition-colors">
                   <span>Lihat Semua</span>
-                  <span class="text-brand-600">→</span>
+                  <span class="text-brand-600 dark:text-teal-400">→</span>
                 </button>
               </div>
 
@@ -1522,11 +1522,11 @@
 
           <!-- Perbandingan Saldo (Col 4) -->
           <div
-            class="lg:col-span-4 bg-white rounded-2xl p-4 sm:p-5 shadow-card border border-teal-50 flex flex-col justify-between">
+            class="lg:col-span-4 bg-white dark:bg-[#0D2220] rounded-2xl p-4 sm:p-5 shadow-card border border-teal-50 dark:border-teal-950/80 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between gap-2 mb-4">
                 <div class="flex items-center gap-2.5">
-                  <svg class="h-5 w-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2.2"
+                  <svg class="h-5 w-5 text-brand-600 dark:text-teal-400" fill="none" stroke="currentColor" stroke-width="2.2"
                     viewBox="0 0 24 24">
                     <path
                       d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
@@ -1535,7 +1535,7 @@
                   <h3 class="text-base font-bold text-slate-900 dark:text-white">Perbandingan Saldo</h3>
                 </div>
                 <span
-                  class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-teal-50 text-brand-700 border border-teal-100"
+                  class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/80 text-brand-700 dark:text-teal-300 border border-teal-100 dark:border-teal-800"
                   id="chartComparisonBadge">
                   Perbandingan Penabung
                 </span>
@@ -1543,11 +1543,11 @@
 
               <!-- Custom Clean Bar Comparison Chart -->
               <div class="pt-2 pb-4 px-2">
-                <div class="h-44 flex items-end justify-center gap-7 sm:gap-10 border-b border-slate-200/80 pb-2">
+                <div class="h-36 sm:h-40 md:h-44 flex items-end justify-center gap-7 sm:gap-10 border-b border-slate-200/80 dark:border-teal-900/60 pb-2">
                   <!-- Bar 1: Saver 1 -->
                   <div class="flex flex-col items-center flex-1 max-w-[95px] group">
                     <span
-                      class="text-[11px] font-extrabold text-slate-800 mb-2 whitespace-nowrap transition-transform group-hover:-translate-y-0.5"
+                      class="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 mb-2 whitespace-nowrap transition-transform group-hover:-translate-y-0.5"
                       id="chartBarBombloongText">
                       Rp 0
                     </span>
@@ -1558,23 +1558,23 @@
                   <!-- Bar 2: Saver 2 -->
                   <div class="flex flex-col items-center flex-1 max-w-[95px] group">
                     <span
-                      class="text-[11px] font-extrabold text-slate-800 mb-2 whitespace-nowrap transition-transform group-hover:-translate-y-0.5"
+                      class="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 mb-2 whitespace-nowrap transition-transform group-hover:-translate-y-0.5"
                       id="chartBarNailongText">
                       Rp 0
                     </span>
                     <div id="chartBarNailong"
-                      class="w-full bg-[#BFDBDC] rounded-t-xl transition-all duration-700 group-hover:brightness-95"
+                      class="w-full bg-[#BFDBDC] dark:bg-[#2DD4BF] rounded-t-xl transition-all duration-700 group-hover:brightness-95"
                       style="height: 16px;" title="Saldo Penabung 2"></div>
                   </div>
                 </div>
                 <!-- Bar Labels -->
                 <div class="flex justify-center gap-7 sm:gap-10 pt-2.5 text-center">
                   <div class="flex-1 max-w-[95px] flex flex-col items-center">
-                    <span class="text-xs font-semibold text-slate-700" id="chartLabelBombloong">Penabung 1</span>
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-300" id="chartLabelBombloong">Penabung 1</span>
                     <span class="text-[10px] font-medium text-slate-400" id="chartSubBombloong">0%</span>
                   </div>
                   <div class="flex-1 max-w-[95px] flex flex-col items-center">
-                    <span class="text-xs font-semibold text-slate-600" id="chartLabelNailong">Penabung 2</span>
+                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-400" id="chartLabelNailong">Penabung 2</span>
                     <span class="text-[10px] font-medium text-slate-400" id="chartSubNailong">0%</span>
                   </div>
                 </div>
@@ -1582,13 +1582,13 @@
             </div>
 
             <!-- Bottom Insight Note -->
-            <div class="mt-4 rounded-2xl bg-teal-50/80 border border-teal-100 p-3.5 flex items-center gap-3">
-              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-100/70 text-brand-700">
+            <div class="mt-4 rounded-2xl bg-teal-50/80 dark:bg-teal-950/70 border border-teal-100 dark:border-teal-900/60 p-3.5 flex items-center gap-3">
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-100/70 dark:bg-teal-900/80 text-brand-700 dark:text-teal-300">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
               </div>
-              <p class="text-xs font-medium text-slate-700 leading-snug" id="dashSaldoCompareMessage">
+              <p class="text-xs font-medium text-slate-700 dark:text-slate-300 leading-snug" id="dashSaldoCompareMessage">
                 Memuat perbandingan saldo...
               </p>
             </div>
