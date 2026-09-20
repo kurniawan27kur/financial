@@ -3481,10 +3481,47 @@
       });
     }
 
-    // Authentication & Role Management Logic
+    // Authentication & Persistent Session Management
+    function saveAuthSession(token, user) {
+      try {
+        if (token && user) {
+          AppState.authToken = token;
+          AppState.currentUser = user;
+          const sessionData = JSON.stringify({ token, user, timestamp: Date.now() });
+          sessionStorage.setItem('app_auth_session', sessionData);
+          localStorage.setItem('app_auth_session', sessionData);
+        }
+      } catch (e) { }
+    }
+
+    function clearAuthSession() {
+      AppState.authToken = null;
+      AppState.currentUser = null;
+      try {
+        sessionStorage.removeItem('app_auth_session');
+        localStorage.removeItem('app_auth_session');
+      } catch (e) { }
+    }
+
     function checkAuthSession() {
-      // Session tokens are intentionally memory-only. A page reload requires login again.
-      // Never trust localStorage/sessionStorage as an authentication source.
+      try {
+        const raw = sessionStorage.getItem('app_auth_session') || localStorage.getItem('app_auth_session');
+        if (raw) {
+          const session = JSON.parse(raw);
+          if (session && session.token && session.user) {
+            AppState.authToken = session.token;
+            AppState.currentUser = session.user;
+            showApp();
+            applyRoleUI();
+            renderDashboard();
+            // Silently sync fresh data in background
+            refreshData(false);
+            return;
+          }
+        }
+      } catch (e) { }
+
+      // Default: show login screen if no session
       AppState.authToken = null;
       AppState.currentUser = null;
       showLogin();
@@ -3594,12 +3631,13 @@
       try {
         const res = await DataService.loginDemo();
         if (res && res.success && res.user) {
-          AppState.currentUser = res.user;
+          saveAuthSession(res.token, res.user);
           showApp();
           applyRoleUI();
           renderDashboard();
           showToast('Selamat datang di Mode Demo! (Akses Lihat Saja) 👁️', 'info');
-          await refreshData(false);
+          // Silently sync fresh data in background without blocking dashboard entry
+          refreshData(false);
         } else {
           throw new Error(res?.error || 'Gagal memulai sesi demo.');
         }
@@ -3654,8 +3692,7 @@
         const res = await DataService.login(username, password);
 
         if (res && res.success && res.user) {
-          AppState.currentUser = res.user;
-
+          saveAuthSession(res.token, res.user);
           showApp();
           applyRoleUI();
           renderDashboard();
@@ -3684,15 +3721,13 @@
     }
 
     async function logoutUser() {
+      clearAuthSession();
+      showLogin();
+      showToast('Anda telah keluar dari akun.', 'info');
       try {
         await DataService.logout();
       } catch (e) {
-        // Always clear local state
-      } finally {
-        AppState.authToken = null;
-        AppState.currentUser = null;
-        showLogin();
-        showToast('Anda telah keluar dari akun.', 'info');
+        // Ignored
       }
     }
 
