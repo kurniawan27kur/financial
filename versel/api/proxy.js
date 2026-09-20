@@ -128,7 +128,7 @@ export default async function handler(req, res) {
     console.error('GAS Proxy Error:', error);
     return res.status(502).json({
       success: false,
-      error: 'Gagal terhubung ke database Google Apps Script: ' + (error.message || String(error))
+      error: 'Gagal terhubung ke server database. Silakan coba beberapa saat lagi.'
     });
   }
 }
