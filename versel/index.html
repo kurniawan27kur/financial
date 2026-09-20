@@ -2404,11 +2404,31 @@
         });
       },
 
-      loginDemo() {
-        return this.request('loginDemo').then(res => {
-          if (res && res.token) AppState.authToken = res.token;
-          return res;
-        });
+      async loginDemo() {
+        try {
+          const res = await this.request('loginDemo');
+          if (res && res.success && res.user) {
+            if (res.token) AppState.authToken = res.token;
+            return res;
+          }
+        } catch (e) {
+          console.warn('Backend loginDemo failed, entering demo session:', e);
+        }
+
+        const demoUser = {
+          id: 'u_demo',
+          username: 'demo',
+          role: 'demo',
+          name: 'User Demo',
+          avatar: '👁️',
+          badgeText: 'Mode Lihat Saja'
+        };
+        AppState.authToken = 'demo_session_token';
+        return {
+          success: true,
+          token: 'demo_session_token',
+          user: demoUser
+        };
       },
 
       getAppData() {
@@ -2640,13 +2660,30 @@
       // Buttons
       const btn1 = document.getElementById('btnDepositSaver1');
       const btn2 = document.getElementById('btnDepositSaver2');
+      const isDemo = AppState.currentUser?.role === 'demo';
+
       if (btn1) {
-        btn1.innerText = `+ Catat Setoran ${s1.name}`;
-        btn1.setAttribute('onclick', `openTransactionModal(${escapeJsAttribute(s1.name)}, 'deposit')`);
+        if (isDemo) {
+          btn1.innerText = `🔒 ${s1.name} (Hanya Lihat)`;
+          btn1.classList.add('opacity-60', 'cursor-not-allowed');
+          btn1.onclick = () => showToast('Mode Demo: Anda hanya memiliki akses lihat (View Only). Silakan login sebagai Admin untuk mencatat setoran.', 'error');
+        } else {
+          btn1.innerText = `+ Catat Setoran ${s1.name}`;
+          btn1.classList.remove('opacity-60', 'cursor-not-allowed');
+          btn1.onclick = () => openTransactionModal(s1.name, 'deposit');
+        }
       }
+
       if (btn2) {
-        btn2.innerText = `+ Catat Setoran ${s2.name}`;
-        btn2.setAttribute('onclick', `openTransactionModal(${escapeJsAttribute(s2.name)}, 'deposit')`);
+        if (isDemo) {
+          btn2.innerText = `🔒 ${s2.name} (Hanya Lihat)`;
+          btn2.classList.add('opacity-60', 'cursor-not-allowed');
+          btn2.onclick = () => showToast('Mode Demo: Anda hanya memiliki akses lihat (View Only). Silakan login sebagai Admin untuk mencatat setoran.', 'error');
+        } else {
+          btn2.innerText = `+ Catat Setoran ${s2.name}`;
+          btn2.classList.remove('opacity-60', 'cursor-not-allowed');
+          btn2.onclick = () => openTransactionModal(s2.name, 'deposit');
+        }
       }
     }
 
@@ -3707,6 +3744,10 @@
         }
       } catch (err) {
         console.error('Refresh error:', err);
+        renderDashboard();
+        if (AppState.activeTab === 'transaksi') renderTransactionsTab();
+        else if (AppState.activeTab === 'profil') renderProfilesTab();
+        else if (AppState.activeTab === 'pengaturan') renderSettingsTab();
         if (showFeedback) showToast('Gagal sinkronisasi data: ' + (err.message || err), 'error');
       }
     }
