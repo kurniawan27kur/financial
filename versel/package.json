@@ -1,6 +1,7 @@
 {
   "name": "financial-journey-vercel",
   "version": "2.0.0",
+  "type": "module",
   "description": "Financial Journey with You - Production Web App for Vercel",
   "private": true,
   "scripts": {

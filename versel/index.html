@@ -3536,6 +3536,32 @@
       if (pInput) pInput.value = '';
     }
 
+    function loadCachedData() {
+      try {
+        const cached = localStorage.getItem('app_cached_data');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed && typeof parsed === 'object') {
+            if (parsed.settings) AppState.settings = Object.assign({}, AppState.settings, parsed.settings);
+            if (Array.isArray(parsed.profiles) && parsed.profiles.length) AppState.profiles = parsed.profiles;
+            if (Array.isArray(parsed.transactions)) AppState.transactions = parsed.transactions;
+          }
+        }
+      } catch (e) {}
+    }
+
+    function saveCachedData() {
+      try {
+        const payload = {
+          settings: AppState.settings,
+          profiles: AppState.profiles,
+          transactions: AppState.transactions,
+          timestamp: Date.now()
+        };
+        localStorage.setItem('app_cached_data', JSON.stringify(payload));
+      } catch (e) {}
+    }
+
     async function handleDemoLogin() {
       const btn = document.getElementById('btnChoiceDemo');
       const originalHtml = btn ? btn.innerHTML : '';
@@ -3544,19 +3570,31 @@
         btn.classList.add('opacity-75');
       }
 
+      // 1. Instant Optimistic UI Transition (< 20ms)
+      const demoUser = {
+        id: 'u_demo',
+        username: 'demo',
+        role: 'demo',
+        name: 'User Demo',
+        avatar: '👁️',
+        badgeText: 'Mode Lihat Saja'
+      };
+      AppState.currentUser = demoUser;
+      showApp();
+      applyRoleUI();
+      renderDashboard();
+      showToast('Selamat datang di Mode Demo! (View Only) 👁️', 'info');
+
+      // 2. Background Asynchronous Session & Fresh Data Sync
       try {
         const res = await DataService.loginDemo();
         if (res && res.success && res.user) {
           AppState.currentUser = res.user;
-          showApp();
           applyRoleUI();
-          await refreshData();
-          showToast(`Selamat datang, ${res.user.name || 'User Demo'}! Mode lihat saja (View Only) aktif. 👁️`, 'info');
-        } else {
-          throw new Error(res?.error || 'Gagal masuk mode demo.');
         }
+        await refreshData(false);
       } catch (err) {
-        showToast('Gagal masuk mode demo: ' + (err.message || err), 'error');
+        console.warn('Demo background sync note:', err);
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -3609,9 +3647,11 @@
 
           showApp();
           applyRoleUI();
-          await refreshData();
-
+          renderDashboard();
           showToast(`Selamat datang, ${res.user.name || 'Administrator'}! Akses penuh aktif. 👑`, 'success');
+
+          // Silently sync fresh data in background
+          refreshData(false);
         } else {
           throw new Error(res?.error || 'Username atau password tidak sesuai.');
         }
@@ -3640,13 +3680,6 @@
       } finally {
         AppState.authToken = null;
         AppState.currentUser = null;
-        AppState.settings = {
-          target_amount: 0,
-          currency_symbol: 'Rp',
-          app_title: 'Financial Journey with You'
-        };
-        AppState.profiles = [];
-        AppState.transactions = [];
         showLogin();
         showToast('Anda telah keluar dari akun.', 'info');
       }
@@ -3724,7 +3757,7 @@
       }
     }
 
-    // Refresh application data from persistent backend
+    // Refresh application data from persistent backend with caching
     async function refreshData(showFeedback = false) {
       try {
         if (showFeedback) showToast('Memuat data terbaru...', 'info');
@@ -3733,6 +3766,7 @@
           AppState.settings = res.settings || AppState.settings;
           AppState.profiles = res.profiles || AppState.profiles;
           AppState.transactions = res.transactions || AppState.transactions;
+          saveCachedData();
 
           // Re-render current active tab
           renderDashboard();
@@ -3829,6 +3863,7 @@
     // Application Bootstrap
     window.addEventListener('DOMContentLoaded', () => {
       initTheme();
+      loadCachedData();
       checkAuthSession();
     });
   </script>
